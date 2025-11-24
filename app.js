@@ -59,6 +59,10 @@ slides.forEach(function (slide, index) {
 
 let counter = 1;
 
+// to prevent new clicks while a slide animation is running
+
+let isMoving = false;
+
 // apply transform; if animate=false, snap instantly
 function applyTransforms(animate = true) {
   if (!animate) {
@@ -83,11 +87,15 @@ applyTransforms(false);
 // buttons working
 
 nextBtn.addEventListener("click", function () {
+  if (isMoving) return;
+  isMoving = true;
   counter++;
   applyTransforms(true);
 });
 
 prevBtn.addEventListener("click", function () {
+  if (isMoving) return;
+  isMoving = true;
   counter--;
   applyTransforms(true);
 });
@@ -97,6 +105,8 @@ prevBtn.addEventListener("click", function () {
 slides.forEach((slide) => {
   slide.addEventListener("transitionend", (e) => {
     if (e.propertyName !== "transform") return;
+
+    isMoving = false;
 
     if (slides[counter] && slides[counter].dataset.clone === "first") {
       // jumped to appended firstClone -> snap to real first slide (1)
